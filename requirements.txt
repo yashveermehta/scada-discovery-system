@@ -1,0 +1,24 @@
+# Core Framework
+flask==3.0.0
+flask-cors==4.0.0
+
+# SNMP & Network
+# FIX: pysnmp-lextudio is the maintained fork - correct install name
+pysnmp-lextudio==6.2.7
+pyasn1==0.6.2
+
+# Graph & Data Processing
+networkx==3.2.1
+
+# Configuration
+pyyaml==6.0.1
+python-dotenv==1.0.1
+
+# Security
+cryptography==42.0.0
+
+# Utilities
+python-dateutil==2.8.2
+
+# Development / Testing
+pytest==8.0.0

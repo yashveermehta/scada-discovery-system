@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SCADA Network Topology Discovery — GAIL</title>
+    <script src="https://d3js.org/d3.v7.min.js"></script>
+    <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+    <div class="container">
+
+        <!-- Header -->
+        <header class="header">
+            <h1>🌐 SCADA Network Topology Discovery</h1>
+            <p>Secure Automatic Network Mapping — GAIL (India) Ltd · Ministry of Petroleum &amp; Natural Gas</p>
+        </header>
+
+        <!-- Control Panel -->
+        <div class="control-panel">
+            <div class="controls">
+                <button id="btn-discover" class="btn btn-primary">🔍 Start Discovery</button>
+                <button id="btn-demo"     class="btn btn-success">🎨 Load Demo</button>
+                <button id="btn-refresh"  class="btn btn-secondary">🔄 Refresh</button>
+                <button id="btn-export"   class="btn btn-secondary">💾 Export JSON</button>
+            </div>
+            <div class="status-bar" id="status-bar">
+                <span class="status-icon">●</span>
+                <span id="status-text">Ready — Click Load Demo to begin</span>
+            </div>
+        </div>
+
+        <!-- Statistics Dashboard -->
+        <div class="stats-grid">
+            <div class="stat-card">
+                <div class="stat-value" id="stat-devices">0</div>
+                <div class="stat-label">Network Devices</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-value" id="stat-connections">0</div>
+                <div class="stat-label">Active Connections</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-value">SNMPv3</div>
+                <div class="stat-label">Security Protocol</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-value">EIGRP</div>
+                <div class="stat-label">Routing Protocol</div>
+            </div>
+        </div>
+
+        <!-- Topology Visualization -->
+        <div class="topology-container">
+            <h2>📊 Network Topology Map</h2>
+
+            <!-- Legend -->
+            <div class="topology-legend">
+                <div class="legend-item">
+                    <div class="legend-dot" style="background:#1976d2"></div> Router
+                </div>
+                <div class="legend-item">
+                    <div class="legend-dot" style="background:#f57c00"></div> Switch
+                </div>
+                <div class="legend-item">
+                    <div class="legend-dot" style="background:#c62828"></div> Firewall
+                </div>
+                <div class="legend-item">
+                    <div class="legend-dot" style="background:#2e7d32"></div> Server / RTU
+                </div>
+                <div class="legend-item">
+                    <div class="legend-line" style="background:#1976d2"></div> EIGRP (L3)
+                </div>
+                <div class="legend-item">
+                    <div class="legend-line" style="background:#f57c00;height:2px;border-top:2px dashed #f57c00;background:none"></div> Layer 2
+                </div>
+                <div class="legend-item">
+                    <div class="legend-line" style="background:#7b1fa2;height:2px;border-top:2px dashed #7b1fa2;background:none"></div> ARP/MAC
+                </div>
+            </div>
+
+            <div id="topology-canvas"></div>
+        </div>
+
+        <!-- Device Details Panel (fixed overlay) -->
+        <div id="device-panel" class="device-panel hidden">
+            <div class="panel-header">
+                <h3 id="panel-title">Device Details</h3>
+                <button class="btn-close" onclick="closeDevicePanel()">✕</button>
+            </div>
+            <div id="device-details" class="panel-content"></div>
+        </div>
+
+        <!-- Footer -->
+        <footer class="footer">
+            🔒 Secure SNMPv3 + EIGRP Discovery &nbsp;|&nbsp; No CDP / LLDP &nbsp;|&nbsp; SCADA Topology System v1.0 &nbsp;|&nbsp; GAIL (India) Ltd
+        </footer>
+    </div>
+
+    <script src="js/api.js"></script>
+    <script src="js/topology.js"></script>
+</body>
+</html>

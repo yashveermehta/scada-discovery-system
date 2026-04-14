@@ -1,0 +1,112 @@
+# SCADA Topology Discovery System - Configuration
+# Production-ready configuration
+
+# Application Settings
+app:
+  name: "SCADA Topology Discovery System"
+  version: "1.0.0"
+  environment: "development"  # development, staging, production
+  debug: true
+
+# SNMP Configuration
+snmp:
+  version: 3  # SNMPv3 only for security
+  security_level: "authPriv"  # Authentication + Privacy
+  auth_protocol: "SHA"  # SHA-256 recommended
+  priv_protocol: "AES"  # AES-128 encryption
+  timeout: 5  # seconds
+  retries: 2
+  port: 161
+
+# Credentials (will be moved to secure vault in production)
+credentials:
+  username: "scada-admin"
+  auth_key: "AuthenticationKey123!"  # Change in production
+  priv_key: "PrivacyEncryptionKey456!"  # Change in production
+
+# Discovery Settings
+discovery:
+  enabled: true
+  auto_start: false
+  interval: 300  # seconds (5 minutes)
+  max_concurrent_devices: 10
+  max_depth: 10  # Maximum hop count from seed devices
+  
+# Seed Devices (starting points for discovery)
+seed_devices:
+  - ip: "10.0.1.1"
+    name: "HQ-Core-Router"
+    priority: 1
+  - ip: "10.0.2.1"
+    name: "Branch-A-Router"
+    priority: 2
+
+# Network Parameters
+network:
+  subnets:
+    - "10.0.0.0/8"
+    - "172.16.0.0/12"
+    - "192.168.0.0/16"
+  excluded_ips:
+    - "10.0.0.1"  # Example: Gateway to exclude
+
+# API Configuration
+api:
+  host: "0.0.0.0"
+  port: 5000
+  cors_enabled: true
+  rate_limiting:
+    enabled: true
+    requests_per_minute: 60
+
+# Database Configuration
+database:
+  type: "sqlite"  # Can be changed to PostgreSQL/MySQL in production
+  path: "data/topology.db"
+  backup_enabled: true
+  backup_interval: 3600  # seconds
+
+# Logging Configuration
+logging:
+  level: "INFO"  # DEBUG, INFO, WARNING, ERROR, CRITICAL
+  file: "logs/topology-discovery.log"
+  max_size_mb: 100
+  backup_count: 5
+  format: "%(asctime)s - %(name)s - %(levelname)s - %(message)s"
+  
+  # Audit logging for security
+  audit_log:
+    enabled: true
+    file: "logs/audit.log"
+
+# Security Settings
+security:
+  max_devices: 10000
+  session_timeout: 3600  # seconds
+  encryption_enabled: true
+  audit_all_access: true
+  
+# Performance Settings
+performance:
+  cache_enabled: true
+  cache_ttl: 300  # seconds
+  parallel_discovery: true
+  max_workers: 4
+
+# Alert Settings (future feature)
+alerts:
+  enabled: false
+  email_notifications: false
+  thresholds:
+    device_down: true
+    new_device: true
+    topology_change: true
+
+# Export Settings
+export:
+  formats:
+    - "json"
+    - "csv"
+    - "graphml"
+  auto_export: false
+  export_path: "exports/"
