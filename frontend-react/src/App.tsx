@@ -3,12 +3,12 @@
 // network health chart, live clock, security score breakdown,
 // export topology, protocol filter, real-time alert counter.
 
-import React, { useState, useEffect, useCallback, useMemo, useRef } from 'react';
+import React, { useState, useEffect, useMemo, useRef } from 'react';
 import {
   ShieldCheck, Activity, LayoutDashboard, Map, Cpu,
   AlertTriangle, Settings, RefreshCw, Search, ChevronRight,
-  Info, Wifi, Shield, BarChart3, Heart, Download, Filter,
-  CheckCircle, XCircle, Clock, Zap, Lock, Eye, Bell, X
+  Info, Shield, BarChart3, Download, Filter,
+  CheckCircle, XCircle, Clock, Zap, Eye, Bell, X
 } from 'lucide-react';
 import { DeviceType } from './types';
 import type { ViewType, TopologyData, NetworkDevice, Alert } from './types';
@@ -136,10 +136,6 @@ const App: React.FC = () => {
     }
     return () => { if (autoScanRef.current) clearInterval(autoScanRef.current); };
   }, [settings.autoScan, settings.scanInterval]);
-
-  const loadTopology = useCallback(async () => {
-    try { const data = await discoveryEngine.refreshTopology(); setTopology(data); } catch { }
-  }, []);
 
   const showToast = (msg: string) => setToast(msg);
 
