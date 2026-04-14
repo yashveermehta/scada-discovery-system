@@ -282,9 +282,9 @@ const App: React.FC = () => {
 
   // ─── DASHBOARD VIEW ────────────────────────────────────────────────────────
   const renderDashboard = () => (
-    <div className="p-4 flex flex-col h-full gap-3 overflow-auto">
+    <div className="p-4 flex flex-col h-full gap-4 overflow-auto pb-24 md:pb-4">
       {/* KPI Row */}
-      <div className="grid grid-cols-4 gap-3 flex-shrink-0">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 flex-shrink-0">
         <KpiCard label="Total Devices" value={topology.nodes.length.toString()} sub="All segments reachable" icon={<Cpu className="w-4 h-4 text-blue-400" />} trend="up" />
         <KpiCard label="Critical Alerts" value={criticalCount.toString()} sub={criticalCount > 0 ? 'Requires attention' : 'All clear'} icon={<AlertTriangle className={`w-4 h-4 ${criticalCount > 0 ? 'text-red-400' : 'text-emerald-400'}`} />} trend={criticalCount > 0 ? 'down' : 'up'} />
         <KpiCard label="Security Score" value={`${score}`} sub={`Grade: ${grade}`} icon={<ShieldCheck className="w-4 h-4 text-blue-400" />} trend={score >= 80 ? 'up' : 'down'} />
@@ -292,9 +292,9 @@ const App: React.FC = () => {
       </div>
 
       {/* Middle Row */}
-      <div className="grid grid-cols-3 gap-3 flex-1 min-h-0">
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 flex-1 min-h-[400px] lg:min-h-0">
         {/* Topology Preview */}
-        <div className="col-span-2 bg-[var(--color-surface-container-low)] border border-[var(--color-outline-variant)]/30 rounded-xl overflow-hidden flex flex-col relative group">
+        <div className="lg:col-span-2 bg-[var(--color-surface-container-low)] border border-[var(--color-outline-variant)]/30 rounded-xl overflow-hidden flex flex-col relative group min-h-[300px]">
           <div className="px-4 py-2.5 border-b border-[var(--color-outline-variant)]/30 flex justify-between items-center flex-shrink-0 relative z-20 bg-[var(--color-surface-container-low)]">
             <h3 className="text-sm font-semibold flex items-center gap-2"><Map className="w-3.5 h-3.5 text-[var(--color-secondary-container)]" />Live Topology</h3>
             <button onClick={() => setActiveView('topology')} className="text-[11px] text-[var(--color-primary)] hover:text-white">Full View →</button>
@@ -362,7 +362,7 @@ const App: React.FC = () => {
   const renderTopology = () => (
     <div className="flex h-full overflow-hidden">
       {/* Left panel */}
-      <div className="w-52 border-r border-slate-800 bg-slate-900/40 flex flex-col p-3 gap-3 flex-shrink-0 overflow-y-auto">
+      <div className="hidden md:flex w-52 border-r border-[#4d4637]/20 bg-[var(--color-surface-container-low)] flex-col p-4 gap-4 flex-shrink-0 overflow-y-auto">
         <div>
           <div className="text-[10px] text-slate-500 uppercase tracking-wider font-semibold mb-2">Actions</div>
           <div className="space-y-1.5">
@@ -411,7 +411,7 @@ const App: React.FC = () => {
 
       {/* Device detail panel */}
       {selectedDevice && (
-        <div className="w-64 border-l border-slate-800 bg-slate-900/80 backdrop-blur flex flex-col flex-shrink-0">
+        <div className="absolute inset-y-0 right-0 z-40 md:static w-64 border-l border-[#4d4637]/20 bg-[var(--color-surface-container-low)]/95 backdrop-blur-md flex flex-col flex-shrink-0 shadow-2xl md:shadow-none transition-transform">
           <div className="px-4 py-3 border-b border-slate-800 flex justify-between items-center">
             <h3 className="text-sm font-bold text-blue-400">Device Details</h3>
             <button onClick={() => setSelectedDevice(null)} className="text-slate-500 hover:text-white"><X className="w-4 h-4" /></button>
@@ -711,9 +711,30 @@ const App: React.FC = () => {
 
   // ─── MAIN LAYOUT ───────────────────────────────────────────────────────────
   return (
-    <div className="flex h-screen bg-[#070a12] text-[var(--color-on-surface)] overflow-hidden font-body selection:bg-[var(--color-primary)] selection:text-[var(--color-on-primary)]">
-      {/* Sidebar */}
-      <aside className="w-64 flex flex-col bg-[#070a12] border-r border-[#4d4637]/10 z-50 flex-shrink-0">
+    <div className="flex h-screen bg-[#070a12] text-[var(--color-on-surface)] overflow-hidden font-body selection:bg-[var(--color-primary)] selection:text-[var(--color-on-primary)] relative">
+      
+      {/* Bottom Navigation for Mobile */}
+      <nav className="md:hidden fixed bottom-0 left-0 right-0 h-16 bg-[#070a12]/95 backdrop-blur-lg border-t border-[var(--color-outline-variant)]/20 z-[60] flex items-center justify-around px-4 pb-safe">
+        <div onClick={() => setActiveView('topology')} className={`flex flex-col items-center gap-1 ${activeView === 'topology' ? 'text-[var(--color-primary)]' : 'text-[var(--color-on-surface-variant)]/40'}`}>
+          <Map className="w-5 h-5" />
+          <span className="font-label text-[8px] uppercase tracking-tighter">Network</span>
+        </div>
+        <div onClick={() => setActiveView('dashboard')} className={`flex flex-col items-center gap-1 ${activeView === 'dashboard' ? 'text-[var(--color-primary)]' : 'text-[var(--color-on-surface-variant)]/40'}`}>
+          <LayoutDashboard className="w-5 h-5" />
+          <span className="font-label text-[8px] uppercase tracking-tighter">Dash</span>
+        </div>
+        <div onClick={() => setActiveView('alerts')} className={`flex flex-col items-center gap-1 ${activeView === 'alerts' ? 'text-[var(--color-primary)]' : 'text-[var(--color-on-surface-variant)]/40'}`}>
+          <Shield className="w-5 h-5" />
+          <span className="font-label text-[8px] uppercase tracking-tighter">Security</span>
+        </div>
+        <div onClick={() => setActiveView('devices')} className={`flex flex-col items-center gap-1 ${activeView === 'devices' ? 'text-[var(--color-primary)]' : 'text-[var(--color-on-surface-variant)]/40'}`}>
+          <Cpu className="w-5 h-5" />
+          <span className="font-label text-[8px] uppercase tracking-tighter">Devices</span>
+        </div>
+      </nav>
+
+      {/* Sidebar (Hidden on Mobile) */}
+      <aside className="hidden md:flex w-64 flex-col bg-[#070a12] border-r border-[#4d4637]/10 z-50 flex-shrink-0">
         <div className="p-6">
           <span className="text-[var(--color-primary)] font-black font-headline tracking-widest text-lg">NODE SPECTRUM</span>
           <p className="font-label text-[10px] text-[var(--color-on-surface-variant)]/40 mt-1 uppercase">Active Scanning</p>
@@ -735,16 +756,16 @@ const App: React.FC = () => {
       </aside>
 
       {/* Main */}
-      <main className="flex-1 flex flex-col overflow-hidden relative p-8 bg-[#070a12]">
-        <header className="flex justify-between items-end mb-8 flex-shrink-0">
+      <main className="flex-1 flex flex-col overflow-hidden relative p-4 md:p-8 bg-[#070a12]">
+        <header className="flex flex-col lg:flex-row justify-between items-start lg:items-end mb-6 md:mb-8 flex-shrink-0 gap-4">
           <div>
-            <h1 className="font-headline text-4xl font-bold text-[var(--color-primary)] tracking-tighter uppercase">
+            <h1 className="font-headline text-3xl md:text-4xl font-bold text-[var(--color-primary)] tracking-tighter uppercase">
               {activeView === 'dashboard' ? 'Network Dashboard' : activeView === 'topology' ? 'Topology View' : activeView === 'devices' ? 'Device Matrix' : activeView === 'alerts' ? 'Security Feed' : 'System Config'}
             </h1>
-            <p className="font-label text-xs text-[var(--color-on-surface-variant)]/60 mt-2 uppercase">SYSTEM SECURE // NODES: {topology.nodes.length} ACTIVE // {rogueCount} UNIDENTIFIED</p>
+            <p className="font-label text-[10px] md:text-xs text-[var(--color-on-surface-variant)]/60 mt-1 md:mt-2 uppercase">SYSTEM SECURE // NODES: {topology.nodes.length} ACTIVE // {rogueCount} UNIDENTIFIED</p>
           </div>
-          <div className="flex gap-4 items-end">
-             <div className="relative w-64 h-[52px]">
+          <div className="flex gap-2 md:gap-4 w-full lg:w-auto items-end">
+             <div className="relative flex-1 lg:flex-none h-[42px] md:h-[52px]">
               <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-[var(--color-on-surface-variant)]/40 w-4 h-4" />
               <input value={searchQuery}
                 onChange={e => { setSearchQuery(e.target.value); if (activeView !== 'devices') setActiveView('devices'); }}
@@ -752,13 +773,13 @@ const App: React.FC = () => {
                 className="w-full h-full bg-[var(--color-surface-container-low)] border-b-2 border-transparent focus:border-[var(--color-primary)] rounded-none pl-10 pr-4 text-sm focus:outline-none transition-all placeholder-[var(--color-on-surface-variant)]/40 text-[var(--color-on-surface)]" />
               {searchQuery && <button onClick={() => setSearchQuery('')} className="absolute right-3 top-1/2 -translate-y-1/2 text-[var(--color-on-surface-variant)] hover:text-white"><X className="w-3.5 h-3.5" /></button>}
             </div>
-            <div className="bg-[var(--color-surface-container-low)] px-4 py-2 border-l-2 border-[var(--color-primary)] h-[52px] flex flex-col justify-center">
-              <span className="font-label text-[10px] text-[var(--color-on-surface-variant)]/40 block uppercase">Uptime</span>
-              <span className="font-headline text-lg font-bold">{(healthHistory[healthHistory.length - 1] ?? 99).toFixed(1)}%</span>
+            <div className="hidden sm:flex bg-[var(--color-surface-container-low)] px-3 py-1.5 md:px-4 md:py-2 border-l-2 border-[var(--color-primary)] h-[42px] md:h-[52px] flex-col justify-center">
+              <span className="font-label text-[9px] md:text-[10px] text-[var(--color-on-surface-variant)]/40 block uppercase">Uptime</span>
+              <span className="font-headline text-base md:text-lg font-bold">{(healthHistory[healthHistory.length - 1] ?? 99).toFixed(1)}%</span>
             </div>
-            <div className="bg-[var(--color-surface-container-low)] px-4 py-2 border-l-2 border-[var(--color-error)] h-[52px] flex flex-col justify-center">
-              <span className="font-label text-[10px] text-[var(--color-on-surface-variant)]/40 block uppercase">Anomalies</span>
-              <span className="font-headline text-lg font-bold text-[var(--color-error)]">{rogueCount < 10 ? `0${rogueCount}` : rogueCount}</span>
+            <div className="bg-[var(--color-surface-container-low)] px-3 py-1.5 md:px-4 md:py-2 border-l-2 border-[var(--color-error)] h-[42px] md:h-[52px] flex flex-col justify-center">
+              <span className="font-label text-[9px] md:text-[10px] text-[var(--color-on-surface-variant)]/40 block uppercase">Anomalies</span>
+              <span className="font-headline text-base md:text-lg font-bold text-[var(--color-error)]">{rogueCount < 10 ? `0${rogueCount}` : rogueCount}</span>
             </div>
           </div>
         </header>
