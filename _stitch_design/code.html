@@ -1,0 +1,329 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&amp;family=Inter:wght@300;400;500;600&amp;family=JetBrains+Mono:wght@400;500&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "on-tertiary-container": "#004932",
+                        "on-secondary-container": "#94b8e2",
+                        "tertiary-fixed-dim": "#91d5b4",
+                        "on-primary-fixed-variant": "#584400",
+                        "surface-container-lowest": "#0b0e16",
+                        "on-error": "#690005",
+                        "surface-bright": "#363942",
+                        "on-primary": "#3d2e00",
+                        "inverse-primary": "#755b00",
+                        "surface-variant": "#31353e",
+                        "surface-tint": "#e6c364",
+                        "surface-container-high": "#272a33",
+                        "primary": "#e6c364",
+                        "surface-container": "#1c1f28",
+                        "on-tertiary": "#003826",
+                        "tertiary": "#91d5b4",
+                        "on-surface-variant": "#d0c5b2",
+                        "surface-container-highest": "#31353e",
+                        "inverse-surface": "#e0e2ee",
+                        "primary-container": "#c9a84c",
+                        "tertiary-fixed": "#acf1cf",
+                        "primary-fixed-dim": "#e6c364",
+                        "secondary-container": "#22496d",
+                        "on-tertiary-fixed-variant": "#015138",
+                        "surface-container-low": "#181b24",
+                        "on-secondary-fixed-variant": "#22496d",
+                        "error-container": "#93000a",
+                        "surface-dim": "#10131c",
+                        "tertiary-container": "#76b99a",
+                        "inverse-on-surface": "#2d3039",
+                        "on-background": "#e0e2ee",
+                        "on-secondary": "#023255",
+                        "on-primary-fixed": "#241a00",
+                        "on-error-container": "#ffdad6",
+                        "outline-variant": "#4d4637",
+                        "background": "#10131c",
+                        "on-secondary-fixed": "#001d35",
+                        "secondary-fixed": "#d0e4ff",
+                        "primary-fixed": "#ffe08f",
+                        "secondary-fixed-dim": "#a5caf4",
+                        "on-tertiary-fixed": "#002114",
+                        "surface": "#10131c",
+                        "outline": "#99907e",
+                        "on-surface": "#e0e2ee",
+                        "secondary": "#a5caf4",
+                        "on-primary-container": "#503d00",
+                        "error": "#ffb4ab"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0px",
+                        "lg": "0px",
+                        "xl": "0px",
+                        "full": "9999px"
+                    },
+                    "fontFamily": {
+                        "headline": ["Space Grotesk"],
+                        "body": ["Inter"],
+                        "label": ["JetBrains Mono"]
+                    }
+                },
+            },
+        }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        @keyframes pulse-ring {
+            0%, 100% { opacity: 0.1; transform: scale(1); }
+            50% { opacity: 0.4; transform: scale(1.1); }
+        }
+        @keyframes pulse-aggressive {
+            0%, 100% { opacity: 0.1; transform: scale(1); }
+            50% { opacity: 0.6; transform: scale(1.2); }
+        }
+        @keyframes scan-line {
+            0% { transform: translateX(-100%); }
+            100% { transform: translateX(1000px); }
+        }
+        @keyframes flow-dash {
+            to { stroke-dashoffset: -20; }
+        }
+        @keyframes rotate-selection {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+        .animate-pulse-ring { animation: pulse-ring 3s ease-in-out infinite; transform-origin: center; }
+        .animate-pulse-rogue { animation: pulse-aggressive 1.5s ease-in-out infinite; transform-origin: center; }
+        .animate-scan { animation: scan-line 6s linear infinite; }
+        .animate-flow { animation: flow-dash 2s linear infinite; }
+        .animate-rotate-select { animation: rotate-selection 10s linear infinite; transform-origin: center; }
+    </style>
+</head>
+<body class="bg-[#070a12] text-on-surface font-body selection:bg-primary selection:text-on-primary">
+<div class="flex h-screen overflow-hidden">
+<!-- Side Navigation (Suppressed per task focus on Dashboard) -->
+<nav class="fixed left-0 top-0 h-full w-64 flex flex-col bg-[#070a12] border-r border-outline-variant/10 z-50">
+<div class="p-6">
+<span class="text-[#e6c364] font-black font-headline tracking-widest text-lg">NODE SPECTRUM</span>
+<p class="font-label text-[10px] text-on-surface-variant/40 mt-1 uppercase">Active Scanning</p>
+</div>
+<div class="flex-1 px-4 space-y-2 mt-4">
+<div class="flex items-center gap-4 px-4 py-3 bg-[#c9a84c]/10 text-[#e6c364] cursor-pointer">
+<span class="material-symbols-outlined text-sm">hub</span>
+<span class="font-label text-xs uppercase tracking-tighter">Network</span>
+</div>
+<div class="flex items-center gap-4 px-4 py-3 text-on-surface-variant/40 hover:bg-[#272a33] transition-all cursor-pointer">
+<span class="material-symbols-outlined text-sm">settings_input_component</span>
+<span class="font-label text-xs uppercase tracking-tighter">Control</span>
+</div>
+<div class="flex items-center gap-4 px-4 py-3 text-on-surface-variant/40 hover:bg-[#272a33] transition-all cursor-pointer">
+<span class="material-symbols-outlined text-sm">security</span>
+<span class="font-label text-xs uppercase tracking-tighter">Security</span>
+</div>
+<div class="flex items-center gap-4 px-4 py-3 text-on-surface-variant/40 hover:bg-[#272a33] transition-all cursor-pointer">
+<span class="material-symbols-outlined text-sm">developer_board</span>
+<span class="font-label text-xs uppercase tracking-tighter">Devices</span>
+</div>
+</div>
+<div class="p-6 mt-auto">
+<button class="w-full py-3 bg-primary text-on-primary font-headline font-bold text-xs uppercase tracking-widest active:scale-[0.98] transition-transform">
+                    FORCE SCAN
+                </button>
+</div>
+</nav>
+<!-- Main Content Canvas -->
+<main class="ml-64 flex-1 relative overflow-auto p-8">
+<!-- Header Cluster -->
+<div class="flex justify-between items-end mb-8">
+<div>
+<h1 class="font-headline text-4xl font-bold text-[#e6c364] tracking-tighter uppercase">Topology View</h1>
+<p class="font-label text-xs text-on-surface-variant/60 mt-2">SYSTEM SECURE // NODES: 24 ACTIVE // 1 UNIDENTIFIED</p>
+</div>
+<div class="flex gap-4">
+<div class="bg-surface-container-low px-4 py-2 border-l-2 border-primary">
+<span class="font-label text-[10px] text-on-surface-variant/40 block">UPTIME</span>
+<span class="font-headline text-lg font-bold">99.84%</span>
+</div>
+<div class="bg-surface-container-low px-4 py-2 border-l-2 border-error">
+<span class="font-label text-[10px] text-on-surface-variant/40 block">ANOMALIES</span>
+<span class="font-headline text-lg font-bold text-error">01</span>
+</div>
+</div>
+</div>
+<!-- Network Topology Map Card -->
+<div class="relative bg-surface-container-low overflow-hidden border border-outline-variant/10 group">
+<!-- SVG Canvas Container -->
+<div class="w-[900px] h-[460px] mx-auto relative bg-[#070a12]">
+<!-- Vertical Scan Line -->
+<div class="absolute top-0 bottom-0 w-24 bg-gradient-to-r from-transparent via-primary/5 to-transparent pointer-events-none z-10 animate-scan"></div>
+<svg class="w-full h-full" viewbox="0 0 900 460">
+<!-- Definitions -->
+<defs>
+<lineargradient id="grad-router" x1="0%" x2="100%" y1="0%" y2="100%">
+<stop offset="0%" style="stop-color:#0d1a2a;stop-opacity:1"></stop>
+<stop offset="100%" style="stop-color:#5b7fa6;stop-opacity:0.3"></stop>
+</lineargradient>
+<lineargradient id="grad-switch" x1="0%" x2="100%" y1="0%" y2="100%">
+<stop offset="0%" style="stop-color:#0a1a12;stop-opacity:1"></stop>
+<stop offset="100%" style="stop-color:#4a8c6f;stop-opacity:0.3"></stop>
+</lineargradient>
+<lineargradient id="grad-plc" x1="0%" x2="100%" y1="0%" y2="100%">
+<stop offset="0%" style="stop-color:#1a1208;stop-opacity:1"></stop>
+<stop offset="100%" style="stop-color:#a07840;stop-opacity:0.3"></stop>
+</lineargradient>
+<lineargradient id="grad-rtu" x1="0%" x2="100%" y1="0%" y2="100%">
+<stop offset="0%" style="stop-color:#120f1a;stop-opacity:1"></stop>
+<stop offset="100%" style="stop-color:#7a6a9e;stop-opacity:0.3"></stop>
+</lineargradient>
+<lineargradient id="grad-rogue" x1="0%" x2="100%" y1="0%" y2="100%">
+<stop offset="0%" style="stop-color:#180a0a;stop-opacity:1"></stop>
+<stop offset="100%" style="stop-color:#9c6060;stop-opacity:0.3"></stop>
+</lineargradient>
+</defs>
+<!-- Connection Lines -->
+<g id="connections">
+<!-- Static Connections -->
+<path d="M 450 60 L 250 180" fill="none" stroke="#1c2840" stroke-opacity="0.6" stroke-width="1.5"></path>
+<path d="M 450 60 L 650 180" fill="none" stroke="#1c2840" stroke-opacity="0.6" stroke-width="1.5"></path>
+<path d="M 250 180 L 150 320" fill="none" stroke="#1c2840" stroke-opacity="0.6" stroke-width="1.5"></path>
+<path d="M 250 180 L 350 320" fill="none" stroke="#1c2840" stroke-opacity="0.6" stroke-width="1.5"></path>
+<path d="M 650 180 L 550 320" fill="none" stroke="#1c2840" stroke-opacity="0.6" stroke-width="1.5"></path>
+<path d="M 650 180 L 750 320" fill="none" stroke="#1c2840" stroke-opacity="0.6" stroke-width="1.5"></path>
+<!-- Active Flow Lines -->
+<path class="animate-flow" d="M 450 60 L 250 180" fill="none" stroke="#5b7fa6" stroke-dasharray="4,6" stroke-opacity="0.8" stroke-width="1.5"></path>
+<path class="animate-flow" d="M 250 180 L 150 320" fill="none" stroke="#5b7fa6" stroke-dasharray="4,6" stroke-opacity="0.4" stroke-width="1.5"></path>
+<path class="animate-flow" d="M 650 180 L 750 320" fill="none" stroke="#9c6060" stroke-dasharray="4,6" stroke-width="1.5"></path>
+</g>
+<!-- Nodes -->
+<!-- Core Router (Selected) -->
+<g class="cursor-pointer" id="CORE-RTR-01">
+<circle class="animate-rotate-select" cx="450" cy="60" fill="transparent" r="18" stroke="#e6c364" stroke-dasharray="2,2" stroke-width="1"></circle>
+<circle class="animate-pulse-ring" cx="450" cy="60" fill="#e6c364" fill-opacity="0.2" r="16"></circle>
+<polygon fill="url(#grad-router)" points="450,45 463,52 463,68 450,75 437,68 437,52" stroke="#e6c364" stroke-width="1.5"></polygon>
+<text fill="#e6c364" font-family="JetBrains Mono" font-size="9" font-weight="bold" text-anchor="middle" x="450" y="95">CORE-RTR-01</text>
+<text fill="#e6c364" fill-opacity="0.6" font-family="JetBrains Mono" font-size="8" text-anchor="middle" x="450" y="105">10.0.0.1</text>
+</g>
+<!-- Distribution Switch A -->
+<g class="cursor-pointer" id="DIST-SW-A">
+<circle class="animate-pulse-ring" cx="250" cy="180" fill="#4a8c6f" fill-opacity="0.2" r="16"></circle>
+<rect fill="url(#grad-switch)" height="24" stroke="#4a8c6f" stroke-width="1.5" width="28" x="236" y="168"></rect>
+<text fill="#d0c5b2" font-family="JetBrains Mono" font-size="9" text-anchor="middle" x="250" y="215">DIST-SW-A</text>
+<text fill="#d0c5b2" fill-opacity="0.4" font-family="JetBrains Mono" font-size="8" text-anchor="middle" x="250" y="225">10.0.1.5</text>
+</g>
+<!-- PLC Unit 04 -->
+<g class="cursor-pointer" id="PLC-UNIT-04">
+<circle class="animate-pulse-ring" cx="150" cy="320" fill="#a07840" fill-opacity="0.2" r="16"></circle>
+<path d="M150 305 L162 310 L162 330 L150 335 L138 330 L138 310 Z" fill="url(#grad-plc)" stroke="#a07840" stroke-width="1.5"></path>
+<text fill="#d0c5b2" font-family="JetBrains Mono" font-size="9" text-anchor="middle" x="150" y="355">PLC-U4</text>
+</g>
+<!-- RTU Remote -->
+<g class="cursor-pointer" id="RTU-REM-12">
+<circle class="animate-pulse-ring" cx="350" cy="320" fill="#7a6a9e" fill-opacity="0.2" r="16"></circle>
+<polygon fill="url(#grad-rtu)" points="350,305 365,320 350,335 335,320" stroke="#7a6a9e" stroke-width="1.5"></polygon>
+<text fill="#d0c5b2" font-family="JetBrains Mono" font-size="9" text-anchor="middle" x="350" y="355">RTU-12</text>
+</g>
+<!-- Distribution Switch B -->
+<g class="cursor-pointer" id="DIST-SW-B">
+<circle class="animate-pulse-ring" cx="650" cy="180" fill="#4a8c6f" fill-opacity="0.2" r="16"></circle>
+<rect fill="url(#grad-switch)" height="24" stroke="#4a8c6f" stroke-width="1.5" width="28" x="636" y="168"></rect>
+<text fill="#d0c5b2" font-family="JetBrains Mono" font-size="9" text-anchor="middle" x="650" y="215">DIST-SW-B</text>
+</g>
+<!-- PLC Unit 09 -->
+<g class="cursor-pointer" id="PLC-UNIT-09">
+<circle class="animate-pulse-ring" cx="550" cy="320" fill="#a07840" fill-opacity="0.2" r="16"></circle>
+<path d="M550 305 L562 310 L562 330 L550 335 L538 330 L538 310 Z" fill="url(#grad-plc)" stroke="#a07840" stroke-width="1.5"></path>
+<text fill="#d0c5b2" font-family="JetBrains Mono" font-size="9" text-anchor="middle" x="550" y="355">PLC-U9</text>
+</g>
+<!-- Rogue Device -->
+<g class="cursor-pointer" id="ROGUE-X">
+<circle class="animate-pulse-rogue" cx="750" cy="320" fill="#9c6060" fill-opacity="0.2" r="16"></circle>
+<polygon fill="url(#grad-rogue)" points="750,305 765,335 735,335" stroke="#9c6060" stroke-width="1.5"></polygon>
+<text fill="#9c6060" font-family="JetBrains Mono" font-size="12" font-weight="bold" text-anchor="middle" x="750" y="325">!</text>
+<text fill="#9c6060" font-family="JetBrains Mono" font-size="9" font-weight="bold" text-anchor="middle" x="750" y="355">ROGUE-DEV</text>
+</g>
+</svg>
+<!-- Floating Legend -->
+<div class="absolute top-6 right-6 bg-[#070a12]/80 backdrop-blur-md p-4 border border-outline-variant/10 z-20">
+<div class="font-headline text-[10px] uppercase font-bold tracking-[0.2em] text-primary mb-3">Node Legend</div>
+<div class="space-y-3">
+<div class="flex items-center gap-3">
+<div class="w-3 h-3 bg-[#5b7fa6] border border-[#5b7fa6]/50"></div>
+<span class="font-label text-[9px] uppercase tracking-tighter text-on-surface-variant">Router</span>
+</div>
+<div class="flex items-center gap-3">
+<div class="w-3 h-3 bg-[#4a8c6f] border border-[#4a8c6f]/50"></div>
+<span class="font-label text-[9px] uppercase tracking-tighter text-on-surface-variant">Switch</span>
+</div>
+<div class="flex items-center gap-3">
+<div class="w-3 h-3 bg-[#a07840] border border-[#a07840]/50"></div>
+<span class="font-label text-[9px] uppercase tracking-tighter text-on-surface-variant">PLC Controller</span>
+</div>
+<div class="flex items-center gap-3">
+<div class="w-3 h-3 bg-[#7a6a9e] border border-[#7a6a9e]/50"></div>
+<span class="font-label text-[9px] uppercase tracking-tighter text-on-surface-variant">RTU Node</span>
+</div>
+<div class="flex items-center gap-3">
+<div class="w-3 h-3 bg-[#9c6060] border border-[#9c6060]/50"></div>
+<span class="font-label text-[9px] uppercase tracking-tighter text-error">Anomalous</span>
+</div>
+</div>
+</div>
+</div>
+<!-- Dashboard Footer / Status Bar -->
+<div class="bg-[#10131c] px-6 py-3 flex items-center justify-between border-t border-outline-variant/5">
+<div class="flex items-center gap-6">
+<div class="flex items-center gap-2">
+<div class="w-1.5 h-1.5 bg-primary rounded-full animate-pulse"></div>
+<span class="font-label text-[10px] text-on-surface-variant/60 uppercase">System Status: Nominal</span>
+</div>
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-[14px] text-on-surface-variant/40">sensors</span>
+<span class="font-label text-[10px] text-on-surface-variant/60 uppercase">Telemetry: 12.4 GB/s</span>
+</div>
+</div>
+<div class="flex gap-4">
+<button class="font-label text-[10px] uppercase text-primary border border-primary/20 px-4 py-1.5 hover:bg-primary/5 transition-colors">Re-Route Traffic</button>
+<button class="font-label text-[10px] uppercase text-[#9c6060] border border-[#9c6060]/20 px-4 py-1.5 hover:bg-[#9c6060]/5 transition-colors">Isolate Rogue</button>
+</div>
+</div>
+</div>
+<!-- Bento Stats Under the Map -->
+<div class="grid grid-cols-4 gap-6 mt-8">
+<div class="bg-surface-container-low p-6 col-span-1">
+<div class="flex justify-between items-start mb-4">
+<span class="material-symbols-outlined text-primary">analytics</span>
+<span class="font-label text-[10px] bg-primary/10 text-primary px-2 py-0.5">LIVE</span>
+</div>
+<p class="font-label text-[10px] text-on-surface-variant/60 uppercase">Latency Average</p>
+<p class="font-headline text-3xl font-bold mt-1">12<span class="text-sm font-normal ml-1">ms</span></p>
+</div>
+<div class="bg-surface-container-low p-6 col-span-1">
+<div class="flex justify-between items-start mb-4">
+<span class="material-symbols-outlined text-[#5b7fa6]">router</span>
+<span class="font-label text-[10px] bg-secondary-container text-on-secondary-container px-2 py-0.5">STABLE</span>
+</div>
+<p class="font-label text-[10px] text-on-surface-variant/60 uppercase">Active Routes</p>
+<p class="font-headline text-3xl font-bold mt-1">142</p>
+</div>
+<div class="bg-surface-container-low p-6 col-span-2 relative overflow-hidden group">
+<!-- Subtle background decoration -->
+<div class="absolute top-0 right-0 w-32 h-full bg-gradient-to-l from-primary/5 to-transparent skew-x-12 transform translate-x-16 group-hover:translate-x-8 transition-transform"></div>
+<div class="flex justify-between items-start mb-4 relative z-10">
+<span class="material-symbols-outlined text-[#e6c364]">warning</span>
+<span class="font-label text-[10px] bg-error-container text-on-error-container px-2 py-0.5">ALERT</span>
+</div>
+<p class="font-label text-[10px] text-on-surface-variant/60 uppercase relative z-10">Unidentified Signature Detected</p>
+<p class="font-headline text-3xl font-bold mt-1 text-error relative z-10">NODE: 750:320</p>
+<p class="font-label text-[9px] text-on-surface-variant/40 mt-2 relative z-10 uppercase">Signature non-compliant with standard RTU protocol // Encryption mismatch.</p>
+</div>
+</div>
+</main>
+</div>
+</body></html>

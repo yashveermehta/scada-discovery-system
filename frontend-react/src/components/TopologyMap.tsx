@@ -56,6 +56,21 @@ const TopologyMap: React.FC<TopologyMapProps> = ({ data, onNodeClick }) => {
       .attr("height", height)
       .attr("fill", "url(#grid)");
 
+    // glowing gradients from Stitch design
+    const addGradient = (id: string, c1: string, c2: string) => {
+      const lg = defs.append("linearGradient").attr("id", id).attr("x1", "0%").attr("y1", "0%").attr("x2", "100%").attr("y2", "100%");
+      lg.append("stop").attr("offset", "0%").attr("stop-color", c1).attr("stop-opacity", 1);
+      lg.append("stop").attr("offset", "100%").attr("stop-color", c2).attr("stop-opacity", 0.3);
+    };
+    addGradient("grad-router", "#0d1a2a", "#5b7fa6");
+    addGradient("grad-switch", "#0a1a12", "#4a8c6f");
+    addGradient("grad-plc", "#1a1208", "#a07840");
+    addGradient("grad-rtu", "#120f1a", "#7a6a9e");
+    addGradient("grad-hmi", "#0d1a1e", "#3a8c9e");
+    addGradient("grad-firewall", "#1a0f0a", "#b56230");
+    addGradient("grad-unknown", "#101010", "#4c4c4c");
+    addGradient("grad-rogue", "#180a0a", "#9c6060");
+
     // glow effect for nodes - gives them that neon look
     const glowFilter = defs.append("filter")
       .attr("id", "nodeGlow")
@@ -171,32 +186,35 @@ const TopologyMap: React.FC<TopologyMapProps> = ({ data, onNodeClick }) => {
           d.fx = null; d.fy = null;
         }));
 
-    // outer glow ring
+    // outer glow ring (animated)
     node.append("circle")
       .attr("r", 28)
-      .attr("fill", "none")
+      .attr("fill", (d: any) => getNodeColor(d))
+      .attr("fill-opacity", 0.2)
       .attr("stroke", (d: any) => getNodeColor(d))
-      .attr("stroke-width", 1.5)
-      .attr("stroke-opacity", 0.3)
+      .attr("stroke-width", 1)
+      .attr("stroke-dasharray", "2,2")
+      .attr("class", (d: any) => !d.isAuthorized ? "animate-pulse-rogue" : "animate-pulse-ring")
       .attr("filter", "url(#nodeGlow)");
 
-    // main circle
+    // main circle (gradient filled)
     node.append("circle")
-      .attr("r", 20)
-      .attr("fill", (d: any) => getNodeColor(d))
-      .attr("stroke", "#ffffff")
-      .attr("stroke-width", 2)
-      .attr("stroke-opacity", 0.3);
+      .attr("r", 18)
+      .attr("fill", (d: any) => `url(#grad-${!d.isAuthorized ? 'rogue' : d.type.toLowerCase()})`)
+      .attr("stroke", (d: any) => getNodeColor(d))
+      .attr("stroke-width", 1.5)
+      .attr("stroke-opacity", 1);
 
-    // dark pill behind the label (so text is readable on any bg)
+    // dark pill behind the label 
     node.append("rect")
       .attr("y", 24)
-      .attr("height", 16)
-      .attr("rx", 3)
-      .attr("fill", "#0f172a")
+      .attr("height", 14)
+      .attr("rx", 2)
+      .attr("fill", "#070a12")
       .attr("fill-opacity", 0.9)
-      .attr("stroke", "#334155")
+      .attr("stroke", "#4d4637")
       .attr("stroke-width", 0.5)
+      .attr("stroke-opacity", 0.3)
       .each(function (d: any) {
         const textLen = (d.name?.length || 6) * 6.5 + 10;
         d3.select(this).attr("width", textLen).attr("x", -textLen / 2);
@@ -204,31 +222,32 @@ const TopologyMap: React.FC<TopologyMapProps> = ({ data, onNodeClick }) => {
 
     // hostname
     node.append("text")
-      .attr("dy", 37)
+      .attr("dy", 35)
       .attr("text-anchor", "middle")
-      .attr("fill", "#e2e8f0")
-      .attr("font-size", "10px")
+      .attr("fill", "#d0c5b2")
+      .attr("font-size", "9px")
       .attr("font-weight", "600")
-      .attr("font-family", "'Inter', 'Segoe UI', sans-serif")
+      .attr("font-family", "JetBrains Mono")
       .text((d: any) => d.name);
 
     // ip address below hostname
     node.append("text")
-      .attr("dy", 52)
+      .attr("dy", 48)
       .attr("text-anchor", "middle")
-      .attr("fill", "#64748b")
+      .attr("fill", "#d0c5b2")
+      .style("opacity", "0.4")
       .attr("font-size", "8px")
-      .attr("font-family", "'Fira Code', monospace")
+      .attr("font-family", "JetBrains Mono")
       .text((d: any) => d.ip);
 
-    // type label inside the circle (R, SW, PLC, etc)
+    // type label inside the circle
     node.append("text")
-      .attr("dy", 5)
+      .attr("dy", 4)
       .attr("text-anchor", "middle")
-      .attr("fill", "#ffffff")
+      .attr("fill", (d: any) => !d.isAuthorized ? "#9c6060" : getNodeColor(d))
       .attr("font-size", "11px")
       .attr("font-weight", "bold")
-      .attr("font-family", "'Inter', sans-serif")
+      .attr("font-family", "JetBrains Mono")
       .text((d: any) => getNodeLabel(d.type));
 
     // update positions on each simulation tick
@@ -293,16 +312,32 @@ const TopologyMap: React.FC<TopologyMapProps> = ({ data, onNodeClick }) => {
   }, [data]);
 
   return (
-    <div ref={containerRef} className="w-full h-full relative overflow-hidden bg-slate-950">
+    <div ref={containerRef} className="w-full h-full relative overflow-hidden bg-transparent">
       <svg ref={svgRef} className="w-full h-full" />
-      {/* legend */}
-      <div className="absolute top-3 right-3 bg-slate-900/90 backdrop-blur-sm px-3 py-2 rounded-lg border border-slate-700/50 text-[10px]">
-        <div className="flex flex-wrap gap-x-3 gap-y-1">
-          <div className="flex items-center gap-1.5"><div className="w-2.5 h-2.5 rounded-full bg-blue-500"></div><span className="text-slate-400">Router</span></div>
-          <div className="flex items-center gap-1.5"><div className="w-2.5 h-2.5 rounded-full bg-emerald-500"></div><span className="text-slate-400">Switch</span></div>
-          <div className="flex items-center gap-1.5"><div className="w-2.5 h-2.5 rounded-full bg-amber-500"></div><span className="text-slate-400">PLC</span></div>
-          <div className="flex items-center gap-1.5"><div className="w-2.5 h-2.5 rounded-full bg-violet-500"></div><span className="text-slate-400">RTU</span></div>
-          <div className="flex items-center gap-1.5"><div className="w-2.5 h-2.5 rounded-full bg-red-500"></div><span className="text-slate-400">Rogue</span></div>
+      {/* Floating Legend from Stitch */}
+      <div className="absolute top-6 right-6 bg-[#070a12]/80 backdrop-blur-md p-4 border border-[var(--color-outline-variant)]/10 z-20 shadow-lg shadow-black/50">
+        <div className="font-headline text-[10px] uppercase font-bold tracking-[0.2em] text-[var(--color-primary)] mb-3">Node Legend</div>
+        <div className="space-y-3">
+          <div className="flex items-center gap-3">
+            <div className="w-3 h-3 bg-[#5b7fa6] border border-[#5b7fa6]/50"></div>
+            <span className="font-label text-[9px] uppercase tracking-tighter text-[var(--color-on-surface-variant)]">Router</span>
+          </div>
+          <div className="flex items-center gap-3">
+            <div className="w-3 h-3 bg-[#4a8c6f] border border-[#4a8c6f]/50"></div>
+            <span className="font-label text-[9px] uppercase tracking-tighter text-[var(--color-on-surface-variant)]">Switch</span>
+          </div>
+          <div className="flex items-center gap-3">
+            <div className="w-3 h-3 bg-[#a07840] border border-[#a07840]/50"></div>
+            <span className="font-label text-[9px] uppercase tracking-tighter text-[var(--color-on-surface-variant)]">PLC</span>
+          </div>
+          <div className="flex items-center gap-3">
+            <div className="w-3 h-3 bg-[#7a6a9e] border border-[#7a6a9e]/50"></div>
+            <span className="font-label text-[9px] uppercase tracking-tighter text-[var(--color-on-surface-variant)]">RTU</span>
+          </div>
+          <div className="flex items-center gap-3">
+            <div className="w-3 h-3 bg-[#9c6060] border border-[#9c6060]/50 animate-pulse-rogue"></div>
+            <span className="font-label text-[9px] uppercase tracking-tighter text-[var(--color-error)]">Anomalous / Rogue</span>
+          </div>
         </div>
       </div>
     </div>

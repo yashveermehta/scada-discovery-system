@@ -8,7 +8,7 @@ import {
   ShieldCheck, Activity, LayoutDashboard, Map, Cpu,
   AlertTriangle, Settings, RefreshCw, Search, ChevronRight,
   Info, Shield, BarChart3, Download, Filter,
-  CheckCircle, XCircle, Clock, Zap, Eye, Bell, X
+  CheckCircle, XCircle, Zap, Eye, Bell, X
 } from 'lucide-react';
 import { DeviceType } from './types';
 import type { ViewType, TopologyData, NetworkDevice, Alert } from './types';
@@ -103,7 +103,6 @@ const App: React.FC = () => {
   const [analysisLoading, setAnalysisLoading] = useState(false);
   const [settings, setSettings] = useState(loadSettings);
   const [filterType, setFilterType] = useState<string>('all');
-  const [now, setNow] = useState(new Date());
   const [healthHistory, setHealthHistory] = useState<number[]>([98, 99, 100, 99, 98, 100, 100, 99, 100]);
   const autoScanRef = useRef<ReturnType<typeof setInterval> | null>(null);
 
@@ -112,9 +111,6 @@ const App: React.FC = () => {
     { id: '2', timestamp: new Date(Date.now() - 60000).toISOString(), severity: 'low', message: 'SNMPv3 polling successful — PLANT-SW-L3 responded in 42ms' },
     { id: '3', timestamp: new Date(Date.now() - 30000).toISOString(), severity: 'high', message: 'RTU REMOTE-RTU-04 offline — last seen 24h ago. Check field connectivity.' },
   ]);
-
-  // Live clock
-  useEffect(() => { const t = setInterval(() => setNow(new Date()), 1000); return () => clearInterval(t); }, []);
 
   // Health history ticker
   useEffect(() => {
@@ -298,12 +294,14 @@ const App: React.FC = () => {
       {/* Middle Row */}
       <div className="grid grid-cols-3 gap-3 flex-1 min-h-0">
         {/* Topology Preview */}
-        <div className="col-span-2 bg-slate-900 border border-slate-800 rounded-xl overflow-hidden flex flex-col">
-          <div className="px-4 py-2.5 border-b border-slate-800 flex justify-between items-center flex-shrink-0">
-            <h3 className="text-sm font-semibold flex items-center gap-2"><Map className="w-3.5 h-3.5 text-blue-400" />Live Topology</h3>
-            <button onClick={() => setActiveView('topology')} className="text-[11px] text-blue-400 hover:text-blue-300">Full View →</button>
+        <div className="col-span-2 bg-[var(--color-surface-container-low)] border border-[var(--color-outline-variant)]/30 rounded-xl overflow-hidden flex flex-col relative group">
+          <div className="px-4 py-2.5 border-b border-[var(--color-outline-variant)]/30 flex justify-between items-center flex-shrink-0 relative z-20 bg-[var(--color-surface-container-low)]">
+            <h3 className="text-sm font-semibold flex items-center gap-2"><Map className="w-3.5 h-3.5 text-[var(--color-secondary-container)]" />Live Topology</h3>
+            <button onClick={() => setActiveView('topology')} className="text-[11px] text-[var(--color-primary)] hover:text-white">Full View →</button>
           </div>
-          <div className="flex-1 min-h-0 pointer-events-none">
+          <div className="flex-1 min-h-0 pointer-events-none relative bg-[#070a12]">
+             {/* Vertical Scan Line Background */}
+            <div className="absolute top-0 bottom-0 w-24 bg-gradient-to-r from-transparent via-[var(--color-primary)]/5 to-transparent pointer-events-none z-10 animate-scan"></div>
             <TopologyMap data={topology} onNodeClick={() => { }} />
           </div>
         </div>
@@ -311,13 +309,13 @@ const App: React.FC = () => {
         {/* Right column */}
         <div className="flex flex-col gap-3 overflow-hidden">
           {/* Security Score Breakdown */}
-          <div className="bg-slate-900 border border-slate-800 rounded-xl p-4 flex-1 overflow-auto">
-            <h3 className="text-xs font-semibold text-slate-400 uppercase tracking-wider mb-3 flex items-center gap-1.5"><Shield className="w-3.5 h-3.5" />Security Score</h3>
+          <div className="bg-[var(--color-surface-container-low)] border border-[var(--color-outline-variant)]/30 rounded-xl p-4 flex-1 overflow-auto">
+            <h3 className="text-xs font-semibold text-[var(--color-on-surface-variant)] uppercase tracking-wider mb-3 flex items-center gap-1.5"><Shield className="w-3.5 h-3.5" />Security Score</h3>
             <div className="flex items-center gap-4 mb-4">
               <div className={`text-5xl font-bold ${gradeColor}`}>{grade}</div>
               <div>
-                <div className="text-2xl font-bold">{score}<span className="text-sm text-slate-500">/100</span></div>
-                <div className="text-[10px] text-slate-500">Based on live telemetry</div>
+                <div className="text-2xl font-bold">{score}<span className="text-sm text-[var(--color-on-surface-variant)]/60">/100</span></div>
+                <div className="text-[10px] text-[var(--color-on-surface-variant)]/60">Based on live telemetry</div>
               </div>
             </div>
             <div className="space-y-2">
@@ -329,24 +327,24 @@ const App: React.FC = () => {
           </div>
 
           {/* Health Chart */}
-          <div className="bg-slate-900 border border-slate-800 rounded-xl p-4 flex-shrink-0">
+          <div className="bg-[var(--color-surface-container-low)] border border-[var(--color-outline-variant)]/30 rounded-xl p-4 flex-shrink-0">
             <div className="flex justify-between items-center mb-2">
-              <h3 className="text-xs font-semibold text-slate-400 uppercase tracking-wider flex items-center gap-1.5"><BarChart3 className="w-3.5 h-3.5" />Network Health</h3>
+              <h3 className="text-xs font-semibold text-[var(--color-on-surface-variant)] uppercase tracking-wider flex items-center gap-1.5"><BarChart3 className="w-3.5 h-3.5" />Network Health</h3>
               <span className="text-[10px] text-emerald-400 font-mono">{(healthHistory[healthHistory.length - 1] ?? 99).toFixed(1)}%</span>
             </div>
-            <Sparkline data={healthHistory} color="#10b981" />
-            <div className="text-[10px] text-slate-600 mt-1">Last 20 readings · updates every 3s</div>
+            <Sparkline data={healthHistory} color="var(--color-primary)" />
+            <div className="text-[10px] text-[var(--color-on-surface-variant)]/60 mt-1">Last 20 readings · updates every 3s</div>
           </div>
         </div>
       </div>
 
       {/* Bottom: Recent Alerts */}
-      <div className="bg-slate-900 border border-slate-800 rounded-xl flex-shrink-0">
-        <div className="px-4 py-2.5 border-b border-slate-800 flex justify-between items-center">
+      <div className="bg-[var(--color-surface-container-low)] border border-[var(--color-outline-variant)]/30 rounded-xl flex-shrink-0">
+        <div className="px-4 py-2.5 border-b border-[var(--color-outline-variant)]/30 flex justify-between items-center">
           <h3 className="text-sm font-semibold flex items-center gap-2"><Bell className="w-3.5 h-3.5 text-amber-400" />Recent Security Events</h3>
-          <button onClick={() => setActiveView('alerts')} className="text-[11px] text-blue-400 hover:text-blue-300">View All ({alerts.length}) →</button>
+          <button onClick={() => setActiveView('alerts')} className="text-[11px] text-[var(--color-primary)] hover:text-white">View All ({alerts.length}) →</button>
         </div>
-        <div className="divide-y divide-slate-800/60">
+        <div className="divide-y divide-[var(--color-outline-variant)]/30">
           {alerts.slice(0, 3).map(a => (
             <div key={a.id} className="px-4 py-2.5 flex items-center gap-3 hover:bg-slate-800/30 transition-colors">
               <div className={`w-2 h-2 rounded-full flex-shrink-0 ${a.severity === 'critical' ? 'bg-red-500' : a.severity === 'high' ? 'bg-orange-500' : a.severity === 'medium' ? 'bg-amber-500' : 'bg-blue-500'}`} />
@@ -399,12 +397,15 @@ const App: React.FC = () => {
       </div>
 
       {/* Map */}
-      <div className="flex-1 relative">
+      <div className="flex-1 relative bg-[#070a12] overflow-hidden">
+        {/* Vertical Scan Line Background */}
+        <div className="absolute top-0 bottom-0 w-24 bg-gradient-to-r from-transparent via-[var(--color-primary)]/5 to-transparent pointer-events-none z-10 animate-scan"></div>
         <TopologyMap data={topology} onNodeClick={setSelectedDevice} />
-        <div className="absolute bottom-4 left-4 bg-slate-900/90 backdrop-blur border border-slate-700/50 rounded-lg px-3 py-2 text-[10px] text-slate-400 space-y-0.5 pointer-events-none">
-          <div>Nodes: <span className="text-white font-mono">{topology.nodes.length}</span></div>
-          <div>Links: <span className="text-white font-mono">{topology.links.length}</span></div>
-          <div>Rogue: <span className={rogueCount > 0 ? 'text-red-400 font-mono' : 'text-emerald-400 font-mono'}>{rogueCount}</span></div>
+        <div className="absolute bottom-4 left-4 bg-[#070a12]/80 backdrop-blur-md border border-[var(--color-outline-variant)]/10 rounded-lg px-4 py-4 text-[10px] text-[var(--color-on-surface-variant)] space-y-1.5 pointer-events-none z-20">
+          <div className="font-headline text-[10px] uppercase font-bold tracking-[0.2em] text-[var(--color-primary)] mb-3">NODE GRAPH</div>
+          <div className="flex justify-between gap-4"><span>Nodes:</span> <span className="text-white font-mono">{topology.nodes.length}</span></div>
+          <div className="flex justify-between gap-4"><span>Links:</span> <span className="text-white font-mono">{topology.links.length}</span></div>
+          <div className="flex justify-between gap-4"><span>Rogue:</span> <span className={rogueCount > 0 ? 'text-[var(--color-error)] font-mono' : 'text-emerald-400 font-mono'}>{rogueCount}</span></div>
         </div>
       </div>
 
@@ -710,78 +711,59 @@ const App: React.FC = () => {
 
   // ─── MAIN LAYOUT ───────────────────────────────────────────────────────────
   return (
-    <div className="flex h-screen bg-slate-950 text-slate-200 overflow-hidden">
+    <div className="flex h-screen bg-[#070a12] text-[var(--color-on-surface)] overflow-hidden font-body selection:bg-[var(--color-primary)] selection:text-[var(--color-on-primary)]">
       {/* Sidebar */}
-      <aside className="w-60 border-r border-slate-800 flex flex-col bg-slate-900/30 flex-shrink-0">
-        <div className="p-5 border-b border-slate-800">
-          <div className="flex items-center gap-3">
-            <div className="w-8 h-8 bg-blue-600 rounded-lg flex items-center justify-center shadow-lg shadow-blue-900/30">
-              <ShieldCheck className="text-white w-5 h-5" />
-            </div>
-            <div>
-              <h1 className="font-bold tracking-tight">SecureTopo</h1>
-              <p className="text-[9px] text-slate-500 uppercase tracking-widest font-semibold">SCADA Monitor</p>
-            </div>
-          </div>
+      <aside className="w-64 flex flex-col bg-[#070a12] border-r border-[#4d4637]/10 z-50 flex-shrink-0">
+        <div className="p-6">
+          <span className="text-[var(--color-primary)] font-black font-headline tracking-widest text-lg">NODE SPECTRUM</span>
+          <p className="font-label text-[10px] text-[var(--color-on-surface-variant)]/40 mt-1 uppercase">Active Scanning</p>
         </div>
 
-        <nav className="flex-1 p-3 space-y-1">
-          <NavItem icon={<LayoutDashboard className="w-4 h-4" />} label="Dashboard" active={activeView === 'dashboard'} onClick={() => setActiveView('dashboard')} />
-          <NavItem icon={<Map className="w-4 h-4" />} label="Topology Map" active={activeView === 'topology'} onClick={() => setActiveView('topology')} />
-          <NavItem icon={<Cpu className="w-4 h-4" />} label="Device Inventory" active={activeView === 'devices'} onClick={() => setActiveView('devices')} />
-          <NavItem icon={<AlertTriangle className="w-4 h-4" />} label="Security Alerts" active={activeView === 'alerts'} onClick={() => setActiveView('alerts')} badge={criticalCount} />
-          <NavItem icon={<Settings className="w-4 h-4" />} label="Settings" active={activeView === 'settings'} onClick={() => setActiveView('settings')} />
+        <nav className="flex-1 px-4 space-y-2 mt-4">
+          <NavItem icon={<Map className="w-4 h-4" />} label="Topology View" active={activeView === 'topology'} onClick={() => setActiveView('topology')} />
+          <NavItem icon={<LayoutDashboard className="w-4 h-4" />} label="Network Dashboard" active={activeView === 'dashboard'} onClick={() => setActiveView('dashboard')} />
+          <NavItem icon={<Cpu className="w-4 h-4" />} label="Device Matrix" active={activeView === 'devices'} onClick={() => setActiveView('devices')} />
+          <NavItem icon={<AlertTriangle className="w-4 h-4" />} label="Security Feed" active={activeView === 'alerts'} onClick={() => setActiveView('alerts')} badge={criticalCount} />
+          <NavItem icon={<Settings className="w-4 h-4" />} label="System Config" active={activeView === 'settings'} onClick={() => setActiveView('settings')} />
         </nav>
 
-        <div className="p-3 border-t border-slate-800 space-y-2">
-          <div className="bg-slate-900/60 border border-slate-800 rounded-lg px-3 py-2 flex items-center gap-2">
-            <Clock className="w-3.5 h-3.5 text-slate-500" />
-            <span className="text-xs font-mono text-slate-300">{now.toLocaleTimeString()}</span>
-          </div>
-          <div className="bg-slate-900 p-3 rounded-lg border border-slate-800">
-            <div className="flex items-center gap-2 mb-1.5">
-              <div className={`w-2 h-2 rounded-full ${rogueCount > 0 ? 'bg-red-500 animate-pulse' : 'bg-emerald-500 animate-pulse'}`} />
-              <span className="text-xs font-medium">{rogueCount > 0 ? 'Threat Detected' : 'Monitoring Active'}</span>
-            </div>
-            <div className="text-[10px] text-slate-500">
-              Devices: {topology.nodes.length} · Score: <span className={gradeColor}>{grade}</span>
-              <br />SNMPv3 + EIGRP Active
-            </div>
-          </div>
+        <div className="p-6 mt-auto">
+          <button onClick={startScan} disabled={isScanning} className="w-full py-3 bg-[var(--color-primary)] text-[var(--color-on-primary)] font-headline font-bold text-xs uppercase tracking-widest active:scale-[0.98] transition-transform disabled:opacity-50">
+            {isScanning ? 'SCANNING...' : 'FORCE SCAN'}
+          </button>
         </div>
       </aside>
 
       {/* Main */}
-      <main className="flex-1 flex flex-col overflow-hidden">
-        <header className="h-14 border-b border-slate-800 flex items-center justify-between px-5 bg-slate-900/10 backdrop-blur flex-shrink-0">
-          <div className="relative w-80">
-            <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-500 w-4 h-4" />
-            <input value={searchQuery}
-              onChange={e => { setSearchQuery(e.target.value); if (activeView !== 'devices') setActiveView('devices'); }}
-              type="text" placeholder="Search IP, MAC, hostname, OS..."
-              className="w-full bg-slate-900/60 border border-slate-800 rounded-lg pl-10 pr-4 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-blue-500 transition-all" />
-            {searchQuery && <button onClick={() => setSearchQuery('')} className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-500 hover:text-white"><X className="w-3.5 h-3.5" /></button>}
+      <main className="flex-1 flex flex-col overflow-hidden relative p-8 bg-[#070a12]">
+        <header className="flex justify-between items-end mb-8 flex-shrink-0">
+          <div>
+            <h1 className="font-headline text-4xl font-bold text-[var(--color-primary)] tracking-tighter uppercase">
+              {activeView === 'dashboard' ? 'Network Dashboard' : activeView === 'topology' ? 'Topology View' : activeView === 'devices' ? 'Device Matrix' : activeView === 'alerts' ? 'Security Feed' : 'System Config'}
+            </h1>
+            <p className="font-label text-xs text-[var(--color-on-surface-variant)]/60 mt-2 uppercase">SYSTEM SECURE // NODES: {topology.nodes.length} ACTIVE // {rogueCount} UNIDENTIFIED</p>
           </div>
-          <div className="flex items-center gap-3">
-            <button onClick={simulateIntrusion} className="px-3 py-1.5 bg-red-600/20 border border-red-500/30 hover:bg-red-600/30 rounded-lg text-xs font-bold text-red-400 flex items-center gap-1.5 transition-colors">
-              <Zap className="w-3 h-3" />Simulate Intrusion
-            </button>
-            <button onClick={startScan} disabled={isScanning} className="px-3 py-1.5 bg-emerald-600 hover:bg-emerald-500 text-xs font-bold rounded-lg flex items-center gap-1.5 border border-emerald-500/30 disabled:opacity-50 transition-all shadow-lg shadow-emerald-900/20">
-              <RefreshCw className={`w-3 h-3 ${isScanning ? 'animate-spin' : ''}`} />
-              {isScanning ? 'Scanning...' : 'Scan Now'}
-            </button>
-            <div className="w-px h-6 bg-slate-800" />
-            <div className="flex items-center gap-2.5">
-              <div className="w-7 h-7 rounded-full bg-blue-600 flex items-center justify-center text-xs font-bold">AU</div>
-              <div className="text-right hidden sm:block">
-                <p className="text-xs font-semibold">Admin User</p>
-                <p className="text-[10px] text-slate-500">SCADA Ops</p>
-              </div>
+          <div className="flex gap-4 items-end">
+             <div className="relative w-64 h-[52px]">
+              <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-[var(--color-on-surface-variant)]/40 w-4 h-4" />
+              <input value={searchQuery}
+                onChange={e => { setSearchQuery(e.target.value); if (activeView !== 'devices') setActiveView('devices'); }}
+                type="text" placeholder="Search IP, MAC..."
+                className="w-full h-full bg-[var(--color-surface-container-low)] border-b-2 border-transparent focus:border-[var(--color-primary)] rounded-none pl-10 pr-4 text-sm focus:outline-none transition-all placeholder-[var(--color-on-surface-variant)]/40 text-[var(--color-on-surface)]" />
+              {searchQuery && <button onClick={() => setSearchQuery('')} className="absolute right-3 top-1/2 -translate-y-1/2 text-[var(--color-on-surface-variant)] hover:text-white"><X className="w-3.5 h-3.5" /></button>}
+            </div>
+            <div className="bg-[var(--color-surface-container-low)] px-4 py-2 border-l-2 border-[var(--color-primary)] h-[52px] flex flex-col justify-center">
+              <span className="font-label text-[10px] text-[var(--color-on-surface-variant)]/40 block uppercase">Uptime</span>
+              <span className="font-headline text-lg font-bold">{(healthHistory[healthHistory.length - 1] ?? 99).toFixed(1)}%</span>
+            </div>
+            <div className="bg-[var(--color-surface-container-low)] px-4 py-2 border-l-2 border-[var(--color-error)] h-[52px] flex flex-col justify-center">
+              <span className="font-label text-[10px] text-[var(--color-on-surface-variant)]/40 block uppercase">Anomalies</span>
+              <span className="font-headline text-lg font-bold text-[var(--color-error)]">{rogueCount < 10 ? `0${rogueCount}` : rogueCount}</span>
             </div>
           </div>
         </header>
 
-        <div className="flex-1 overflow-hidden">
+        <div className="flex-1 overflow-hidden relative">
           {activeView === 'dashboard' && renderDashboard()}
           {activeView === 'topology' && renderTopology()}
           {activeView === 'devices' && renderDevices()}
@@ -848,13 +830,13 @@ function AddDevicePanel({ onAdd }: { onAdd: (type: DeviceType, name: string) => 
 
 function NavItem({ icon, label, active, onClick, badge }: { icon: React.ReactNode; label: string; active: boolean; onClick: () => void; badge?: number }) {
   return (
-    <button onClick={onClick} className={`w-full flex items-center justify-between px-3 py-2.5 rounded-lg transition-all group ${active ? 'bg-blue-600/10 text-blue-400 border border-blue-500/20' : 'text-slate-500 hover:bg-slate-800 hover:text-slate-300'}`}>
-      <div className="flex items-center gap-3">
-        <div className={`${active ? 'text-blue-400' : 'text-slate-500 group-hover:text-slate-300'} transition-colors`}>{icon}</div>
-        <span className="text-xs font-semibold">{label}</span>
+    <div onClick={onClick} className={`flex items-center justify-between px-4 py-3 cursor-pointer transition-all ${active ? 'bg-[var(--color-primary-container)]/10 text-[var(--color-primary)]' : 'text-[var(--color-on-surface-variant)]/40 hover:bg-[var(--color-surface-container-high)]'}`}>
+      <div className="flex items-center gap-4">
+        {icon}
+        <span className="font-label text-xs uppercase tracking-tighter">{label}</span>
       </div>
-      {badge !== undefined && badge > 0 && <span className="text-[10px] px-1.5 py-0.5 rounded-full font-bold bg-red-500 text-white">{badge}</span>}
-    </button>
+      {badge !== undefined && badge > 0 && <span className="font-label text-[10px] text-[var(--color-error)] font-bold">{badge}</span>}
+    </div>
   );
 }
 
