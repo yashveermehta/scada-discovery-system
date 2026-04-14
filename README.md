@@ -12,6 +12,8 @@
 ![D3.js](https://img.shields.io/badge/D3.js-7-F9A03C?style=for-the-badge&logo=d3.js&logoColor=white)
 ![SQLite](https://img.shields.io/badge/SQLite-003B57?style=for-the-badge&logo=sqlite&logoColor=white)
 
+**Live Demo:** [https://yashveermehta.github.io/scada-discovery-system/](https://yashveermehta.github.io/scada-discovery-system/)
+
 <br/>
 
 **Real-time SCADA network discovery, topology visualization, and rogue device detection.**
