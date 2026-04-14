@@ -1,0 +1,62 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.egg-info/
+dist/
+build/
+.eggs/
+*.egg
+.Python
+env/
+venv/
+.venv/
+ENV/
+
+# Database
+*.db
+*.sqlite
+*.sqlite3
+
+# Logs
+logs/
+*.log
+backend/api/logs/
+
+# Environment
+.env
+.env.local
+.env.*.local
+
+# Node / Frontend
+node_modules/
+dist/
+.cache/
+*.tsbuildinfo
+tsc_output.txt
+
+# OS
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Backup folders
+*-backup/
+*_backup/
+
+# Misc
+*.tmp
+*.temp
+pdf_template.txt
+HOW_TO_RUN.md
+POWERSHELL_COMMANDS.md
+QUICK_FIX.md
+UI_INTEGRATION_COMPLETE.md
+PROJECT_ANALYSIS.md
+PROJECT_REPORT.md
